@@ -1,10 +1,16 @@
 import axios from 'axios';
+import ProductSummary from '../components/Product/ProductSummary';
+import ProductAttributes from '../components/Product/ProductAttributes';
 
 function Product(props) {
   const { product } = props;
-  console.log(product);
 
-  return <>product</>;
+  return (
+    <>
+      <ProductSummary {...product} />
+      <ProductAttributes {...product} />
+    </>
+  );
 }
 
 Product.getInitialProps = async ({ query: { _id } }) => {
