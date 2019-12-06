@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -11,6 +11,7 @@ import {
 } from 'semantic-ui-react';
 import axios from 'axios';
 import baseUrl from '../utils/baseUrl';
+import catchErrors from '../utils/catchErrors';
 
 const INITIAL_PRODUCT = {
   name: '',
@@ -28,6 +29,8 @@ function CreateProduct() {
 
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [error, setError] = useState('');
 
   const handleChange = e => {
     const { name, value, files } = e.target;
@@ -38,6 +41,11 @@ function CreateProduct() {
       setProduct(prevProduct => ({ ...prevProduct, [name]: value }));
     }
   };
+
+  useEffect(() => {
+    const isProduct = Object.values(product).every(el => Boolean(el));
+    isProduct ? setDisabled(false) : setDisabled(true);
+  }, [product]);
 
   const handleImageUpload = async () => {
     const data = new FormData();
@@ -50,18 +58,23 @@ function CreateProduct() {
   };
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    setLoading(true);
-    const mediaUrl = await handleImageUpload();
-    console.log(mediaUrl);
-    const url = `${baseUrl}/api/product`;
-    const { name, price, description } = product;
-    const payload = { mediaUrl, name, price, description };
-    const response = await axios.post(url, payload);
-    console.log(response);
-    setLoading(false);
-    setProduct(INITIAL_PRODUCT);
-    setSuccess(true);
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const mediaUrl = await handleImageUpload();
+      console.log(mediaUrl);
+      const url = `${baseUrl}/api/product`;
+      const { name, price, description } = product;
+      const payload = { mediaUrl, name, price, description };
+      const response = await axios.post(url, payload);
+      console.log(response);
+      setProduct(INITIAL_PRODUCT);
+      setSuccess(true);
+    } catch (err) {
+      catchErrors(err, setError);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -70,7 +83,13 @@ function CreateProduct() {
         <Icon name='add' color='orange' />
         Create New Product
       </Header>
-      <Form loading={loading} success={success} onSubmit={handleSubmit}>
+      <Form
+        error={error ? true : false}
+        loading={loading}
+        success={success}
+        onSubmit={handleSubmit}
+      >
+        <Message error header='Oops' content={error} />
         <Message
           success
           icon='check'
@@ -118,7 +137,7 @@ function CreateProduct() {
         />
         <Form.Field
           control={Button}
-          disabled={loading}
+          disabled={disabled || loading}
           color='blue'
           icon='pencil alternate'
           content='Submit'
