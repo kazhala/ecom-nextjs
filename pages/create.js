@@ -9,26 +9,59 @@ import {
   Header,
   Icon
 } from 'semantic-ui-react';
+import axios from 'axios';
+import baseUrl from '../utils/baseUrl';
+
+const INITIAL_PRODUCT = {
+  name: '',
+  price: '',
+  media: '',
+  description: ''
+};
 
 function CreateProduct() {
-  const [product, setProduct] = useState({
-    name: '',
-    price: '',
-    media: '',
-    description: ''
-  });
+  const [product, setProduct] = useState(INITIAL_PRODUCT);
+
+  const { name, price, description, media } = product;
 
   const [mediaPreview, setMediaPreview] = useState('');
 
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const handleChange = e => {
     const { name, value, files } = e.target;
-    if (name === 'media') {
+    if (name === 'media' && files[0]) {
       setProduct(prevProduct => ({ ...prevProduct, media: files[0] }));
       setMediaPreview(window.URL.createObjectURL(files[0]));
     } else {
       setProduct(prevProduct => ({ ...prevProduct, [name]: value }));
     }
-    console.log(product);
+  };
+
+  const handleImageUpload = async () => {
+    const data = new FormData();
+    data.append('file', media);
+    data.append('upload_preset', 'bilibonshop');
+    data.append('cloud_name', 'kazhala');
+    const response = await axios.post(process.env.CLOUDINARY_URL, data);
+    const mediaUrl = response.data.url;
+    return mediaUrl;
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setLoading(true);
+    const mediaUrl = await handleImageUpload();
+    console.log(mediaUrl);
+    const url = `${baseUrl}/api/product`;
+    const { name, price, description } = product;
+    const payload = { mediaUrl, name, price, description };
+    const response = await axios.post(url, payload);
+    console.log(response);
+    setLoading(false);
+    setProduct(INITIAL_PRODUCT);
+    setSuccess(true);
   };
 
   return (
@@ -37,7 +70,13 @@ function CreateProduct() {
         <Icon name='add' color='orange' />
         Create New Product
       </Header>
-      <Form>
+      <Form loading={loading} success={success} onSubmit={handleSubmit}>
+        <Message
+          success
+          icon='check'
+          header='Success!'
+          content='Your product has been posted'
+        />
         <Form.Group widths='equal'>
           <Form.Field
             control={Input}
@@ -45,6 +84,7 @@ function CreateProduct() {
             label='Name'
             placeholder='Name'
             onChange={handleChange}
+            value={name}
           />
           <Form.Field
             control={Input}
@@ -55,6 +95,7 @@ function CreateProduct() {
             step='0.01'
             type='number'
             onChange={handleChange}
+            value={price}
           />
           <Form.Field
             control={Input}
@@ -73,9 +114,11 @@ function CreateProduct() {
           label='Description'
           placeholder='Description'
           onChange={handleChange}
+          value={description}
         />
         <Form.Field
           control={Button}
+          disabled={loading}
           color='blue'
           icon='pencil alternate'
           content='Submit'
