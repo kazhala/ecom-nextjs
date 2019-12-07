@@ -2,6 +2,9 @@ import { useReducer, useEffect } from 'react';
 import { Button, Form, Icon, Message, Segment } from 'semantic-ui-react';
 import Link from 'next/link';
 import catchErrors from '../utils/catchErrors';
+import axios from 'axios';
+import baseUrl from '../utils/baseUrl';
+import { handleLogin } from '../utils/auth';
 
 const initialState = {
   name: '',
@@ -53,8 +56,11 @@ function Signup() {
     e.preventDefault();
     try {
       dispatch({ type: 'LOADING' });
-      console.log(formState);
       //make a request
+      const url = `${baseUrl}/api/signup`;
+      const payload = { name, email, password };
+      const response = await axios.post(url, payload);
+      handleLogin(response.data);
     } catch (err) {
       catchErrors(err, error => {
         dispatch({ type: 'ERROR', payload: error });
