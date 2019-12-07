@@ -57,7 +57,7 @@ function Login() {
       const payload = { email, password };
       //make a request
       const response = await axios.post(url, payload);
-      handleLogin(response);
+      handleLogin(response.data);
     } catch (err) {
       catchErrors(err, error => {
         dispatch({ type: 'ERROR', payload: error });
@@ -113,7 +113,7 @@ function Login() {
       <Message attached='bottom' warning>
         <Icon name='help' />
         New user?{' '}
-        <Link href='/signun'>
+        <Link href='/signup'>
           <a>Sign up here</a>
         </Link>{' '}
         instead.
