@@ -4,12 +4,12 @@ import ProductAttributes from '../components/Product/ProductAttributes';
 import baseUrl from '../utils/baseUrl';
 
 function Product(props) {
-  const { product } = props;
+  const { product, user } = props;
 
   return (
     <>
       <ProductSummary {...product} />
-      <ProductAttributes {...product} />
+      <ProductAttributes user={user} {...product} />
     </>
   );
 }
