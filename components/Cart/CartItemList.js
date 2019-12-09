@@ -52,7 +52,7 @@ function CartItemList(props) {
       </Segment>
     );
   }
-  return <Item.Group items={mapCartProductsToItems(products)} />;
+  return <Item.Group divided items={mapCartProductsToItems(products)} />;
 }
 
 export default CartItemList;
