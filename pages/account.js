@@ -10,7 +10,7 @@ function Account({ user, orders }) {
     <>
       <AccountHeader {...user} />
       <AccountOrders orders={orders} />
-      {user.role === 'root' && <AccountPermissions />}
+      {user.role === 'root' ? <AccountPermissions /> : null}
     </>
   );
 }

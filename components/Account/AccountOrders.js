@@ -15,7 +15,7 @@ function AccountOrders({ orders }) {
 
   const mapOrdersToPanels = orders => {
     return orders.map(order => ({
-      key: order._id,
+      childKey: order._id,
       title: {
         content: <Label color='blue' content={order.createdAt} />
       },
@@ -34,7 +34,7 @@ function AccountOrders({ orders }) {
             </List.Header>
             <List>
               {order.products.map(p => (
-                <List.Item>
+                <List.Item key={p._id}>
                   <Image avatar src={p.product.mediaUrl} />
                   <List.Content>
                     <List.Header>{p.product.name}</List.Header>
