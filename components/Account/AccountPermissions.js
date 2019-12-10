@@ -25,7 +25,7 @@ function AccountPermissions() {
         <Icon name='settings' />
         User Permissions
       </Header>
-      <Table compact celled definition>
+      <Table fixed celled style={{ overflowWrap: 'break-word' }}>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell />
