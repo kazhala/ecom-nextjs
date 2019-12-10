@@ -63,7 +63,7 @@ function AccountOrders({ orders }) {
         Order History
       </Header>
       {orders.length === 0 ? (
-        <Segment iverted tertiary color='grey' textAlign='center'>
+        <Segment inverted tertiary color='grey' textAlign='center'>
           <Header icon>
             <Icon name='copy outline' />
             No past orders.
