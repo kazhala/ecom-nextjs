@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import uuidv4 from 'uuid/v4';
 import jwt from 'jsonwebtoken';
 import Cart from '../../models/Cart';
+import Product from '../../models/Product';
 import Order from '../../models/Order';
 import calculateCartTotal from '../../utils/calculateCartTotal';
 
