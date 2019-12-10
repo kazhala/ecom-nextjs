@@ -66,8 +66,8 @@ function CreateProduct() {
       const url = `${baseUrl}/api/product`;
       const { name, price, description } = product;
       const payload = { mediaUrl, name, price, description };
-      const response = await axios.post(url, payload);
-      console.log(response);
+      await axios.post(url, payload);
+      // console.log(response);
       setProduct(INITIAL_PRODUCT);
       setSuccess(true);
     } catch (err) {
