@@ -8,10 +8,13 @@ function Home(props) {
   return <ProductList products={products} />;
 }
 
-Home.getInitialProps = async () => {
+Home.getInitialProps = async ctx => {
+  const page = ctx.query.page ? ctx.query.page : '1';
+  const size = 9;
   // fetch data
   const url = `${baseUrl}/api/products`;
-  let response = await axios.get(url);
+  const payload = { params: { page, size } };
+  let response = await axios.get(url, payload);
   // return response data
   return { products: response.data };
 };
